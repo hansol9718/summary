@@ -1,0 +1,58 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Summary Website</title>
+</head>
+
+<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
+<body>
+    <h1>Type in a website</h1>
+    <input type="text" id="link">
+    <button id="btn">submit</button>
+    <h1>Results:</h1>
+    <h2>Title</h2>
+    <div id="title"></div>
+    <h2>Description</h2>
+    <div id="description"></div>
+    <h2>Images</h2>
+    <div id="images"></div>
+    <h1>Errors</h1>
+</body>
+<script>
+    var url = "https://api.hansol7.me/v1/summary?url="
+    document.getElementById('btn').addEventListener('click', getSummary);
+    var title = document.getElementById("title")
+    var desc = document.getElementById("description")
+    var img = document.getElementById("images")
+    function getSummary() {
+        img.innerHTML = "";
+        fetch(url + document.getElementById('link').value)
+        .then(function(response) {
+            let dataPromise = response.json();
+            return dataPromise
+        })
+        .then(function(data) {
+            console.log(data)
+            if(data.title != null) {
+                title.innerHTML = data.title
+            }
+            if(data.description != null) {
+                desc.innerHTML = data.description
+            }
+            if(data.images != null) {
+                data.images.forEach(function(obj) {
+                    var image = new Image();
+                    image.src = obj.url
+                    image.setAttribute("width", obj.width);
+                    image.setAttribute("height", obj.height);
+                    image.setAttribute("alt", obj.alt);
+                    img.appendChild(image);
+                }) 
+            }
+        });
+    }
+</script>
+</html>
